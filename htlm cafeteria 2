@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Registro de Tickets - Cafetería</title>
+  <style>
+    body { font-family: sans-serif; margin: 20px; background-color: #f8f8f8; }
+    h1 { color: #333; }
+    .form-section { margin-bottom: 20px; background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    label { display: block; margin-top: 10px; font-weight: bold; }
+    input, select, textarea { width: 100%; padding: 8px; margin-top: 5px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #eee; }
+    button { margin-top: 10px; padding: 10px 15px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    button:hover { background: #0056b3; }
+  </style>
+</head>
+<body>
+
+<h1>Registro de Ticket</h1>
+
+<div class="form-section">
+  <label for="cajero">Nombre del Cajero:</label>
+  <input type="text" id="cajero" />
+
+  <label for="fechaHora">Fecha y Hora:</label>
+  <input type="datetime-local" id="fechaHora" />
+
+  <label for="formaPago">Forma de Pago:</label>
+  <select id="formaPago">
+    <option value="efectivo">Efectivo</option>
+    <option value="tarjeta">Tarjeta</option>
+    <option value="otro">Otro</option>
+  </select>
+
+  <label for="comentarios">Comentarios (opcional):</label>
+  <textarea id="comentarios"></textarea>
+</div>
+
+<div class="form-section">
+  <h3>Agregar Producto</h3>
+  <label for="producto">Nombre del Producto:</label>
+  <input type="text" id="producto" />
+
+  <label for="cantidad">Cantidad:</label>
+  <input type="number" id="cantidad" />
+
+  <label for="precio">Precio Unitario:</label>
+  <input type="number" step="0.01" id="precio" />
+
+  <button onclick="agregarProducto()">Agregar Producto</button>
+
+  <table id="detalleProductos">
+    <thead>
+      <tr><th>Producto</th><th>Cantidad</th><th>Precio Unitario</th><th>Subtotal</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <p><strong>Total: $<span id="total">0.00</span></strong></p>
+</div>
+
+<button onclick="registrarTicket()">Registrar Ticket</button>
+
+<script>
+  let productos = [];
+  let total = 0;
+
+  function agregarProducto() {
+    const nombre = document.getElementById('producto').value;
+    const cantidad = parseInt(document.getElementById('cantidad').value);
+    const precio = parseFloat(document.getElementById('precio').value);
+
+    if (!nombre || cantidad <= 0 || precio <= 0) {
+      alert(\"Datos de producto inválidos.\");
+      return;
+    }
+
+    const subtotal = cantidad * precio;
+    productos.push({ nombre, cantidad, precio, subtotal });
+    total += subtotal;
+
+    const tbody = document.querySelector('#detalleProductos tbody');
+    const fila = document.createElement('tr');
+    fila.innerHTML = `<td>${nombre}</td><td>${cantidad}</td><td>$${precio.toFixed(2)}</td><td>$${subtotal.toFixed(2)}</td>`;
+    tbody.appendChild(fila);
+
+    document.getElementById('total').textContent = total.toFixed(2);
+
+    document.getElementById('producto').value = '';
+    document.getElementById('cantidad').value = '';
+    document.getElementById('precio').value = '';
+  }
+
+  function registrarTicket() {
+    const cajero = document.getElementById('cajero').value;
+    const fechaHora = document.getElementById('fechaHora').value;
+    const formaPago = document.getElementById('formaPago').value;
+    const comentarios = document.getElementById('comentarios').value;
+
+    if (!cajero || !fechaHora || productos.length === 0) {
+      alert(\"Faltan datos obligatorios o no hay productos.\");
+      return;
+    }
+
+    const ticket = {
+      cajero,
+      fechaHora,
+      formaPago,
+      comentarios,
+      productos,
+      total
+    };
+
+    console.log(\"Ticket registrado:\", ticket);
+    alert(\"Ticket registrado correctamente (simulado en consola).\");
+    
+    // Reset
+    productos = [];
+    total = 0;
+    document.querySelector('#detalleProductos tbody').innerHTML = '';
+    document.getElementById('total').textContent = '0.00';
+  }
+</script>
+
+</body>
+</html>
